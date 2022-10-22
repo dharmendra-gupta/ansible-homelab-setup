@@ -1,0 +1,37 @@
+# {{ ansible_managed }}
+---
+version: '3.5'
+
+services:
+  vaultwarden:
+    image: vaultwarden/server:latest
+    container_name: vaultwarden
+    restart: always
+    environment:
+      WEBSOCKET_ENABLED: "true"  # Enable WebSocket notifications.
+      SHOW_PASSWORD_HINT: '{{ vaultwarden_show_pass_hint }}'
+      SIGNUPS_ALLOWED: '{{ vaultwarden_signups_allowed }}'
+      ADMIN_TOKEN: '{{ vw_admin_token }}'
+      SMTP_HOST: '{{ vw_smtp_host }}'
+      SMTP_PORT: '{{ vw_smtp_port }}'
+      SMTP_SECURITY: '{{ vw_smtp_security }}'
+      SMTP_USERNAME: '{{ vw_smtp_username }}'
+      SMTP_PASSWORD: '{{ vw_smtp_password }}'
+    volumes:
+      - ./vw-data:/data
+
+  caddy:
+    image: caddy:2
+    container_name: caddy
+    restart: always
+    ports:
+      - 1313:80  # Needed for the ACME HTTP-01 challenge.
+      - 4433:443
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - ./caddy-config:/config
+      - ./caddy-data:/data
+    environment:
+      DOMAIN: '{{ vaultwarden_domain }}'
+      EMAIL: '{{ vaultwarden_email }}'
+      LOG_FILE: "/data/access.log"

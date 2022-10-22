@@ -1,0 +1,47 @@
+---
+# Location where configuration files will be stored.
+config_dir: "~/configs"
+
+
+# Control what to setup & what not to
+# keep it false as samba & stubby & nextcloudpi are still in TODO
+samba_enable: false
+stubby_enable: false
+pihole_enable: true
+gitea_enable: true
+vaultwarden_enable: true
+aria2_enable: true
+nextcloudpi: false
+
+# Stubby Configuration
+# TODO
+
+# Pi-hole configuration.
+pihole_hostname: pihole
+pihole_timezone: Asia/Kolkata
+# use comma separated if more than one like 127.0.0.1#5353,8.8.8.8
+pihole_dns: 127.0.0.1#5353
+# theme names can be found on pihole github or website
+# this can also be changed later from admin portal
+pihole_theme: default-dark
+pihole_password: "change-this-password"
+
+# Gitea configuration.
+gitea-db-name: gitea
+gitea-db-user: gitea
+gitea-db-password: "change-this-password"
+
+# Vaultwarden confihuration
+# Your domain
+vaultwarden_domain: "https://vaultwarden.example.com"
+# The email address to use for ACME registration.
+vaultwarden_email: "admin@example.com"
+vaultwarden_signups_allowed: false
+vaultwarden_show_pass_hint: false
+# use openssl rand -base64 48 to generate secure token
+vw_admin_token: "token here"
+vw_smtp_host: smtp.gmail.com
+vw_smtp_port: 465
+vw_smtp_security: force_tls
+vw_smtp_username: "mail here"
+vw_smtp_password: "app password or password here"

@@ -1,0 +1,27 @@
+---
+- name: Restart stubby
+  ansible.builtin.service:
+    name: stubby
+    state: restarted
+    enabled: true
+
+- name: Restart pi-hole
+  community.docker.docker_compose:
+    project_src: "{{ config_dir }}/pi-hole/"
+    build: false
+    restarted: true
+  become: false
+
+- name: Restart gitea
+  community.docker.docker_compose:
+    project_src: "{{ config_dir }}/gitea/"
+    build: false
+    restarted: true
+  become: false
+
+- name: Restart vaultwarden
+  community.docker.docker_compose:
+    project_src: "{{ config_dir }}/vaultwarden/"
+    build: false
+    restarted: true
+  become: false

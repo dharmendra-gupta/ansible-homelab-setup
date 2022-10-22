@@ -1,0 +1,8 @@
+# TODO
+---
+- name: Ensure Stubby is installed (Debian).
+  ansible.builtin.apt:
+    name:
+      - stubby
+    state: present
+  when: ansible_facts.os_family == "Debian"

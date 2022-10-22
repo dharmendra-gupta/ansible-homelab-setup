@@ -1,0 +1,24 @@
+# TODO
+---
+- name: Ensure Samba is installed (Debian).
+  ansible.builtin.apt:
+    name:
+      - samba
+      - samba-common
+      - samba-vfs-modules
+    state: present
+    install_recommends: false
+  when: ansible_facts.os_family == "Debian"
+
+- name: Ensure Samba server is running and set to start on boot.
+  ansible.builtin.service:
+    name: smbd
+    state: started
+    enabled: true
+
+- name: Ensure Samba nmb is running and set to start on boot.
+  ansible.builtin.service:
+    name: nmbd
+    state: started
+    enabled: true
+# - name: Configure Samba

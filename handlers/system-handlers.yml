@@ -1,0 +1,22 @@
+---
+- name: remove unused packages
+  ansible.builtin.apt:
+    autoremove: true
+  when: ansible_facts.os_family == "Debian"
+
+- name: remove useless packages from the cache
+  ansible.builtin.apt:
+    autoclean: true
+  when: ansible_facts.os_family == "Debian"
+
+- name: restart nmb
+  service:
+  ansible.builtin.service:
+    name: nmbd
+    state: restarted
+
+- name: restart smb
+  service:
+  ansible.builtin.service:
+    name: smbd
+    state: restarted

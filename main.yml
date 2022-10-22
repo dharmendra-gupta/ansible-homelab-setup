@@ -1,0 +1,52 @@
+---
+- hosts: internet_pi
+  become: true
+
+  pre_tasks:
+    - name: Load configuration (with defaults from example file).
+      ansible.builtin.include_vars: "{{ item }}"
+      loop:
+        - example.config.yml
+        - config.yml
+
+    - name: Ensure apt cache is up to date.
+      ansible.builtin.apt:
+        update_cache: true
+        cache_valid_time: 3600
+      when:
+        - ansible_facts.os_family == "Debian"
+
+  handlers:
+    - name: Include docker handlers.
+      ansible.builtin.import_tasks: handlers/docker-handlers.yml
+
+    - name: Include system handlers.
+      ansible.builtin.import_tasks: handlers/system-handlers.yml
+
+  tasks:
+    - name: Setup Docker.
+      ansible.builtin.import_tasks: tasks/docker.yml
+
+    - name: Setup Stubby.
+      ansible.builtin.import_tasks: tasks/stubby.yml
+      when: stubby_enable
+
+    - name: Setup Samba.
+      ansible.builtin.import_tasks: tasks/samba.yml
+      when: samba_enable
+
+    - name: Setup Pi-Hole.
+      ansible.builtin.import_tasks: tasks/pi-hole.yml
+      when: pihole_enable
+
+    - name: Setup Gitea.
+      ansible.builtin.import_tasks: tasks/gitea.yml
+      when: gitea_enable
+
+    - name: Setup Vaultwarden.
+      ansible.builtin.import_tasks: tasks/vaultwarden.yml
+      when: vaultwarden_enable
+
+    - name: Setup aria2.
+      ansible.builtin.import_tasks: tasks/aria2.yml
+      when: aria2_enable
