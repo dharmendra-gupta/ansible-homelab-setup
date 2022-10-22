@@ -10,13 +10,11 @@
   when: ansible_facts.os_family == "Debian"
 
 - name: restart nmb
-  service:
   ansible.builtin.service:
     name: nmbd
     state: restarted
 
 - name: restart smb
-  service:
   ansible.builtin.service:
     name: smbd
     state: restarted
