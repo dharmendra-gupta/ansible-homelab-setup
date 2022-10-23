@@ -16,7 +16,7 @@ services:
     environment:
       TZ: '{{ pihole_timezone }}'
       WEBPASSWORD: '{{ pihole_password }}'
-      FTLCONF_REPLY_ADDR4: '{{ ansible_facts['default_ipv4']['address'] }}'
+      FTLCONF_REPLY_ADDR4: "{{ ansible_facts['default_ipv4']['address'] }}"
       PIHOLE_DNS_: '{{ pihole_dns }}'
       WEBTHEME: '{{ pihole_theme }}'
     volumes:

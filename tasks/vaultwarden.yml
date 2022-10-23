@@ -6,16 +6,26 @@
     mode: 0755
   become: false
 
-- name: Copy caddy config file
-  ansible.buitin.copy:
-    src: files/Caddyfile
-    dest: "{{ config_dir }}/vaultwarden/Caddyfile"
+- name: Copy nginx config file to Pi
+  ansible.builtin.copy:
+    src: files/default.conf
+    dest: "{{ config_dir }}/vaultwarden/default.conf"
+    mode: "0640"
+  become: false
+
+- name: Copy htcontol file to Pi
+  ansible.builtin.copy:
+    src: files/htcontrol
+    dest: "{{ config_dir }}/vaultwarden/htcontrol"
+    mode: "0777"
+  become: false
+  when: vw_admin_basic_auth
 
 - name: Copy vaultwarden docker-compose template to Pi.
   ansible.builtin.template:
     src: templates/vaultwarden-docker-compose.yml.j2
     dest: "{{ config_dir }}/vaultwarden/docker-compose.yml"
-    mode: '0640'
+    mode: "0777"
   become: false
   notify: Restart vaultwarden
 

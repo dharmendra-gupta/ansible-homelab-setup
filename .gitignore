@@ -1,3 +1,7 @@
 inventory.ini
 config.yml
 .DS_Store
+files/htcontrol
+files/default.conf
+files/stubby.conf
+files/smb.conf

@@ -2,6 +2,6 @@
 - name: Ensure Aria2 is installed (Debian).
   ansible.builtin.apt:
     name:
-      - aria2c
+      - aria2
     state: present
   when: ansible_facts.os_family == "Debian"
