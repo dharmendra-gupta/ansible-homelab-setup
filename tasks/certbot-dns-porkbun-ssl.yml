@@ -1,0 +1,68 @@
+---
+- name: Create letsencrypt folder on Pi.
+  ansible.builtin.file:
+    path: "{{ path_ssl }}"
+    state: directory
+    mode: 0755
+  become: false
+
+- name: Copy porkbun.ini to Pi.
+  ansible.builtin.copy:
+    src: files/porkbun.ini
+    dest: "{{ config_dir }}/porkbun.ini"
+    mode: "0640"
+  become: false
+
+- name: Check for exiting certificates
+  community.docker.docker_container:
+    name: certbot_dns_porkbun
+    image: infinityofspace/certbot_dns_porkbun:latest
+    command: certificates
+    detach: false
+    recreate: true
+    state: started
+    volumes:
+      - "{{ path_ssl }}:/etc/letsencrypt"
+      - "/var/log/letsencrypt:/var/log/letsencrypt"
+  register: certificates_output
+  become: false
+
+# - debug: var=certificates_output
+
+- name: Generate SSL certificates if not available
+  community.docker.docker_container:
+    name: certbot_dns_porkbun
+    image: infinityofspace/certbot_dns_porkbun:latest
+    detach: false
+    recreate: true
+    cleanup: true
+    command: >
+      certonly --non-interactive --agree-tos
+      --email "{{ email }}"
+      --preferred-challenges dns
+      --authenticator dns-porkbun
+      --dns-porkbun-credentials '{{ config_dir }}/porkbun.ini'
+      --dns-porkbun-propagation-seconds 60 -d "{{ domain_name }}"
+    state: started
+    volumes:
+      - "{{ path_ssl }}:/etc/letsencrypt"
+      - "/var/log/letsencrypt:/var/log/letsencrypt"
+  when: certificates_output['container']['Output'].find('No certificates found.') != -1
+  become: false
+
+- name: Copy renew certificate bash file template to Pi.
+  ansible.builtin.template:
+    src: templates/renew_certbot_dns_porkbun_ssl.sh.j2
+    dest: "{{ config_dir }}/renew_certbot_dns_porkbun_ssl.sh"
+    mode: '0777'
+  become: false
+
+- name: Setup renew certificates cron job for daily
+  ansible.builtin.cron:
+    name: "renew certificates"
+    minute: "0"
+    hour: "0"
+    job: "bash {{ config_dir }}/renew_certbot_dns_porkbun_ssl.sh"
+    user: "{{ ansible_user }}"
+    state: present
+  become: false

@@ -1,0 +1,20 @@
+#!/bin/bash
+
+# renew certificate if its due renewal
+docker container run --rm --name certbot_dns_porkbun \
+   -v "{{ path_ssl }}:/etc/letsencrypt" \
+   -v "/var/log/letsencrypt:/var/log/letsencrypt" \
+   infinityofspace/certbot_dns_porkbun:latest \
+   certonly \
+     --non-interactive \
+     --agree-tos \
+     --email "{{ email }}" \
+     --preferred-challenges dns \
+     --authenticator dns-porkbun \
+     --dns-porkbun-credentials '{{ config_dir }}/porkbun.ini' \
+     --dns-porkbun-propagation-seconds 60 \
+     -d "{{ domain_name }}"
+
+# reload nginx services inside containers
+# TODO add jinja for loop to loop over multiple containers
+docker container exec vw_nginx nginx -s reload

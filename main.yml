@@ -35,6 +35,9 @@
       ansible.builtin.import_tasks: tasks/samba.yml
       when: samba_enable
 
+    - name: Add SSL certificates
+      ansible.builtin.import_tasks: tasks/certbot-dns-porkbun-ssl.yml
+
     - name: Setup Pi-Hole.
       ansible.builtin.import_tasks: tasks/pi-hole.yml
       when: pihole_enable

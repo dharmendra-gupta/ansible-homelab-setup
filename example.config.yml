@@ -11,10 +11,16 @@ pihole_enable: true
 gitea_enable: true
 vaultwarden_enable: true
 aria2_enable: true
-nextcloudpi: false
+nextcloud: false
 
 # Stubby Configuration
 # TODO
+
+
+# SSL Configs
+email: "email@example.com"
+domain_name: example.com
+path_ssl: "~/configs/letsencrypt"
 
 # Pi-hole configuration.
 pihole_hostname: pihole
@@ -41,6 +47,4 @@ vw_smtp_port: 465
 vw_smtp_security: force_tls
 vw_smtp_username: "mail here"
 vw_smtp_password: "app password or password here"
-# ssl certicates path
-path_ssl: ./letsencrypt/
 vw_admin_basic_auth: false
