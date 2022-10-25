@@ -5,3 +5,5 @@ files/htcontrol
 files/default.conf
 files/stubby.conf
 files/smb.conf
+files/porkbun.ini
+.vscode
